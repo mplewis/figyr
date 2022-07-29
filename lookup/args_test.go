@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("args", func() {
+var _ = Describe("NewFromArgs", func() {
 	It("works as intended", func() {
 		in := []string{
 			"app.go",
