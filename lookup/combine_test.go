@@ -7,8 +7,8 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("NewFromArgs", func() {
-	It("parses config values from os.Args", func() {
+var _ = Describe("Combine", func() {
+	It("combines getters with proper fallback", func() {
 		primary := lookup.NewFromArgs([]string{
 			"--check-interval=0.02",
 			"--success-message=Your application was submitted",
