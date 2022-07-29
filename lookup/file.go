@@ -1,59 +1,58 @@
 package lookup
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 
-	"github.com/BurntSushi/toml"
 	"gopkg.in/yaml.v3"
 )
 
+type decoder func(in io.Reader, dest any) error
+
 var knownExtensions = map[string]func(string) (ValMap, error){
+	".json": newFromJSON,
 	".yaml": newFromYAML,
 	".yml":  newFromYAML,
-	".json": newFromJSON,
-	".toml": newFromTOML,
 }
 
-func newFromYAML(path string) (ValMap, error) {
-	v := ValMap{}
+func newFromDecoder(path string, dec decoder) (ValMap, error) {
+	vm := NewValMap()
 	f, err := os.Open(path)
 	if err != nil {
-		return v, err
+		return vm, err
 	}
 	defer f.Close()
-	err = yaml.NewDecoder(f).Decode(&v)
-	return v, err
+	kvs := map[string]any{}
+	err = dec(f, &kvs)
+	if err != nil {
+		return vm, err
+	}
+	for k, v := range kvs {
+		vm.Set(k, fmt.Sprint(v))
+	}
+	return vm, nil
 }
 
 func newFromJSON(path string) (ValMap, error) {
-	v := ValMap{}
-	f, err := os.Open(path)
-	if err != nil {
-		return v, err
-	}
-	defer f.Close()
-	err = yaml.NewDecoder(f).Decode(&v)
-	return v, err
+	return newFromDecoder(path, func(in io.Reader, dest any) error {
+		return json.NewDecoder(in).Decode(dest)
+	})
 }
 
-func newFromTOML(path string) (ValMap, error) {
-	v := ValMap{}
-	f, err := os.Open(path)
-	if err != nil {
-		return v, err
-	}
-	defer f.Close()
-	_, err = toml.NewDecoder(f).Decode(&v)
-	return v, err
+func newFromYAML(path string) (ValMap, error) {
+	return newFromDecoder(path, func(in io.Reader, dest any) error {
+		return yaml.NewDecoder(in).Decode(dest)
+	})
 }
 
 func NewFromFile(path string) (ValMap, error) {
 	ext := filepath.Ext(path)
 	builder, supported := knownExtensions[ext]
 	if !supported {
-		return nil, fmt.Errorf("unknown extension %s", ext)
+		return NewValMap(), fmt.Errorf("unknown extension %s", ext)
 	}
 	return builder(path)
 }

@@ -19,7 +19,8 @@ var _ = Describe("NewFromArgs", func() {
 			"some-pos-arg",
 			"--foo=grault", // later overrides earlier
 		}
-		out := lookup.ValMap{"foo": "grault", "baz": "quux corge xyzzy"}
-		Expect(lookup.NewFromArgs(in)).To(Equal(out))
+		cfg := lookup.NewFromArgs(in)
+		_, found := cfg.Get("test")
+		Expect(found).To(BeFalse())
 	})
 })
