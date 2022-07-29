@@ -1,12 +1,17 @@
 package lookup
 
-import "os"
+import (
+	"os"
+
+	"github.com/iancoleman/strcase"
+)
 
 type envFetcher struct {
 	fetchFromEnv func(string) string
 }
 
-func (e envFetcher) Fetch(key string) (string, bool) {
+func (e envFetcher) Get(key string) (string, bool) {
+	key = strcase.ToScreamingSnake(key)
 	val := e.fetchFromEnv(key)
 	if val == "" {
 		return "", false
@@ -18,5 +23,5 @@ func NewFromEnv(fetcher func(string) string) envFetcher {
 	if fetcher == nil {
 		fetcher = os.Getenv
 	}
-	return envFetcher{fetcher}
+	return envFetcher{fetchFromEnv: fetcher}
 }
