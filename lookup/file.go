@@ -12,14 +12,14 @@ import (
 
 type decoder func(in io.Reader, dest any) error
 
-var knownExtensions = map[string]func(string) (ValMap, error){
+var knownExtensions = map[string]func(string) (valMap, error){
 	".json": newFromJSON,
 	".yaml": newFromYAML,
 	".yml":  newFromYAML,
 }
 
-func newFromDecoder(path string, dec decoder) (ValMap, error) {
-	vm := NewValMap()
+func newFromDecoder(path string, dec decoder) (valMap, error) {
+	vm := newValMap()
 	f, err := os.Open(path)
 	if err != nil {
 		return vm, err
@@ -36,23 +36,23 @@ func newFromDecoder(path string, dec decoder) (ValMap, error) {
 	return vm, nil
 }
 
-func newFromJSON(path string) (ValMap, error) {
+func newFromJSON(path string) (valMap, error) {
 	return newFromDecoder(path, func(in io.Reader, dest any) error {
 		return json.NewDecoder(in).Decode(dest)
 	})
 }
 
-func newFromYAML(path string) (ValMap, error) {
+func newFromYAML(path string) (valMap, error) {
 	return newFromDecoder(path, func(in io.Reader, dest any) error {
 		return yaml.NewDecoder(in).Decode(dest)
 	})
 }
 
-func NewFromFile(path string) (ValMap, error) {
+func NewFromFile(path string) (valMap, error) {
 	ext := filepath.Ext(path)
 	builder, supported := knownExtensions[ext]
 	if !supported {
-		return NewValMap(), fmt.Errorf("unknown extension %s", ext)
+		return newValMap(), fmt.Errorf("unknown extension %s", ext)
 	}
 	return builder(path)
 }
