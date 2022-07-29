@@ -2,8 +2,8 @@ package lookup
 
 import "github.com/iancoleman/strcase"
 
-type fetcher interface {
-	Fetch(string) (string, bool)
+type getter interface {
+	Get(string) (string, bool)
 }
 
 type ValMap struct {

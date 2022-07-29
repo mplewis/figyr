@@ -31,5 +31,8 @@ var _ = Describe("NewFromArgs", func() {
 		val, found = cfg.Get("success_message")
 		Expect(found).To(BeTrue())
 		Expect(val).To(Equal("Your application was submitted"))
+
+		_, found = cfg.Get("xxx")
+		Expect(found).To(BeFalse())
 	})
 })
