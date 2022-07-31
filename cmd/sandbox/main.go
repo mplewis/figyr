@@ -1,10 +1,10 @@
 package main
 
 import (
-	"os"
 	"time"
 
 	"github.com/k0kubun/pp/v3"
+	"github.com/mplewis/figyr/lookup"
 )
 
 type Config struct {
@@ -24,5 +24,5 @@ func main() {
 	// var cfg Config
 	// pp.Println(figyr.ParseFieldDefs(&cfg))
 	// fmt.Println(cfg)
-	pp.Println(os.Args)
+	pp.Println(lookup.NewFromDefaults(nil))
 }
