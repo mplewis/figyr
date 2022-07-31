@@ -6,6 +6,7 @@ import (
 	"github.com/iancoleman/strcase"
 )
 
+// envFetcher fetches config values from `SCREAMING_SNAKE_CASE` environment variables.
 type envFetcher struct {
 	fetchFromEnv func(string) string
 }

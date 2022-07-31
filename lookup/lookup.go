@@ -5,18 +5,26 @@ import (
 	"regexp"
 )
 
+// configArgMatcher matches a config file path argument.
 var configArgMatcher = regexp.MustCompile(`^--config=(.*)$`)
 
+// getter is an interface for getting a named value if it exists.
 type getter interface {
 	Get(string) (string, bool)
 }
 
+// LookupArgs is a config that specifies what config sources should be used.
 type LookupArgs struct {
 	OSArgs     []string
 	FilePaths  []string
 	EnvFetcher func(string) string
 }
 
+// NewFromDefaults builds a config lookup from the default config sources.
+// In order of priority:
+// 1. `os.Args`
+// 2. `--config=myconfig.json` arguments
+// 3. Environment variables
 func NewFromDefaults(args *LookupArgs) (getter, error) {
 	if args == nil {
 		args = &LookupArgs{OSArgs: os.Args, EnvFetcher: os.Getenv}
@@ -37,6 +45,8 @@ func NewFromDefaults(args *LookupArgs) (getter, error) {
 	return Combine(fetchers...), nil
 }
 
+// getConfigPaths extracts the config file paths from the given args,
+// returning them in reverse order to maintain the expected cascade priority.
 func getConfigPaths(args []string) []string {
 	var configPaths []string
 	for _, arg := range args {

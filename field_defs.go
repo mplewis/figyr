@@ -7,6 +7,7 @@ import (
 	"strings"
 )
 
+// FieldDef holds the type definition of a field in a custom struct, as well as its Figyr metadata.
 type FieldDef struct {
 	Name     string
 	Type     reflect.Type
@@ -14,14 +15,17 @@ type FieldDef struct {
 	Default  string
 }
 
+// hasDefault returns true if the field has a default value.
 func (f *FieldDef) hasDefault() bool {
 	return f.Default != ""
 }
 
+// ignored returns true if this struct field should be ignored, e.g. it was not tagged.
 func (f *FieldDef) ignored() bool {
 	return f.Type == nil
 }
 
+// Coerce converts the given value to a type compatible with the field.
 func (f *FieldDef) Coerce(in string) (any, error) {
 	if f.Required && in == "" {
 		return nil, fmt.Errorf("missing required field %s", f.Name)
@@ -57,8 +61,9 @@ func (f *FieldDef) Coerce(in string) (any, error) {
 	}
 }
 
-func buildFieldDef(name string, typ reflect.Type, val string) (FieldDef, error) {
-	bits := strings.Split(val, ":")
+// buildFieldDef builds a FieldDef from the given field name, type, and Figyr tag.
+func buildFieldDef(name string, typ reflect.Type, tagVal string) (FieldDef, error) {
+	bits := strings.Split(tagVal, ":")
 	mandate := bits[0]
 	def := FieldDef{Name: name, Type: typ}
 
@@ -84,6 +89,7 @@ func buildFieldDef(name string, typ reflect.Type, val string) (FieldDef, error) 
 	return def, nil
 }
 
+// ParseFieldDefs parses the given struct and returns a list of FieldDefs.
 func ParseFieldDefs(dst interface{}) ([]FieldDef, error) {
 	errors := []error{}
 
