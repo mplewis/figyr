@@ -1,9 +1,11 @@
 package main
 
 import (
+	"reflect"
 	"time"
 
 	"github.com/k0kubun/pp/v3"
+	"github.com/mplewis/figyr"
 	"github.com/mplewis/figyr/lookup"
 )
 
@@ -20,9 +22,34 @@ type Config struct {
 	SomeAdditionalData string        // not set by config
 }
 
+func check(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
 func main() {
-	// var cfg Config
-	// pp.Println(figyr.ParseFieldDefs(&cfg))
-	// fmt.Println(cfg)
-	pp.Println(lookup.NewFromDefaults(nil))
+	var cfg Config
+
+	vals, err := lookup.NewFromDefaults(nil)
+	check(err)
+	defs, err := figyr.ParseFieldDefs(&cfg)
+	pp.Println(defs)
+	for _, def := range defs {
+		t := def.Type
+		pp.Println(t, t.PkgPath(), t.Name())
+	}
+
+	check(err)
+	for name, def := range defs {
+		rawVal, found := vals.Get(name)
+		if found {
+			val, err := def.Coerce(rawVal)
+			check(err)
+			// fmt.Printf("setting %s to %s -> %#v\n", name, rawVal, val)
+			reflect.ValueOf(&cfg).Elem().FieldByName(name).Set(reflect.ValueOf(val))
+		}
+	}
+
+	pp.Println(cfg)
 }

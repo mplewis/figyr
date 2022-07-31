@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // FieldDef holds the type definition of a field in a custom struct, as well as its Figyr metadata.
@@ -15,49 +16,38 @@ type FieldDef struct {
 	Default  string
 }
 
-// hasDefault returns true if the field has a default value.
-func (f *FieldDef) hasDefault() bool {
-	return f.Default != ""
-}
-
-// ignored returns true if this struct field should be ignored, e.g. it was not tagged.
-func (f *FieldDef) ignored() bool {
-	return f.Type == nil
-}
-
 // Coerce converts the given value to a type compatible with the field.
 func (f *FieldDef) Coerce(in string) (any, error) {
 	if f.Required && in == "" {
 		return nil, fmt.Errorf("missing required field %s", f.Name)
 	}
+	if in == "" {
+		in = f.Default
+	}
 
-	switch f.Type.Kind() {
-	case reflect.String:
-		if !f.hasDefault() {
-			return "", nil
-		}
+	ident := f.Type.Name()
+	if pkg := f.Type.PkgPath(); pkg != "" {
+		ident = fmt.Sprintf("%s.%s", pkg, f.Type.Name())
+	}
+	switch ident {
+
+	case "string":
 		return in, nil
 
-	case reflect.Int:
-		if !f.hasDefault() {
-			return 0, nil
-		}
+	case "int", "int64":
 		return strconv.Atoi(in)
 
-	case reflect.Bool:
-		if !f.hasDefault() {
-			return false, nil
-		}
+	case "bool":
 		return strconv.ParseBool(in)
 
-	case reflect.Float64:
-		if !f.hasDefault() {
-			return 0, nil
-		}
+	case "float64":
 		return strconv.ParseFloat(in, 64)
 
+	case "time.Duration":
+		return time.ParseDuration(in)
+
 	default:
-		return nil, fmt.Errorf("unsupported type %s", f.Type.Kind())
+		return nil, fmt.Errorf("unsupported type %s for field %s", ident, f.Name)
 	}
 }
 
@@ -89,8 +79,8 @@ func buildFieldDef(name string, typ reflect.Type, tagVal string) (FieldDef, erro
 	return def, nil
 }
 
-// ParseFieldDefs parses the given struct and returns a list of FieldDefs.
-func ParseFieldDefs(dst interface{}) ([]FieldDef, error) {
+// ParseFieldDefs parses the given struct and returns a map of struct field names to FieldDefs.
+func ParseFieldDefs(dst interface{}) (map[string]FieldDef, error) {
 	errors := []error{}
 
 	typ := reflect.TypeOf(dst)
@@ -100,7 +90,7 @@ func ParseFieldDefs(dst interface{}) ([]FieldDef, error) {
 
 	el := typ.Elem()
 	count := el.NumField()
-	fields := make([]FieldDef, count)
+	defs := map[string]FieldDef{}
 	for i := 0; i < count; i++ {
 		f := el.Field(i)
 		val, annotated := f.Tag.Lookup("figyr")
@@ -113,12 +103,11 @@ func ParseFieldDefs(dst interface{}) ([]FieldDef, error) {
 			errors = append(errors, err)
 			continue
 		}
-
-		fields[i] = def
+		defs[f.Name] = def
 	}
 
 	if len(errors) > 0 {
 		return nil, fmt.Errorf("%d errors occurred: %v", len(errors), errors)
 	}
-	return fields, nil
+	return defs, nil
 }
