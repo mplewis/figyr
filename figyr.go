@@ -12,3 +12,9 @@ func Parse(config any) error {
 	}
 	return refparse.Parse(config, source)
 }
+
+func MustParse(config any) {
+	if err := Parse(config); err != nil {
+		panic(err)
+	}
+}

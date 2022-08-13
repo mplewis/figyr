@@ -38,9 +38,6 @@ func prettyPrint(x any) {
 
 func main() {
 	var cfg Config
-	err := figyr.Parse(&cfg)
-	if err != nil {
-		panic(err)
-	}
+	figyr.MustParse(&cfg)
 	prettyPrint(cfg)
 }
