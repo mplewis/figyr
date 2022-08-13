@@ -19,10 +19,10 @@ type Config struct {
 	CheckInterval time.Duration `figyr:"default=15s"`
 }
 
-func LoadConfig() Config {
+func LoadConfig() (Config, error) {
   var cfg Config
-  figyr.Parse(&cfg)
-  return cfg
+  err := figyr.Parse(&cfg)
+  return cfg, err
 }
 ```
 
