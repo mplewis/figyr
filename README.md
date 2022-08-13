@@ -1,5 +1,7 @@
 # Figyr
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/mplewis/figyr.svg)](https://pkg.go.dev/github.com/mplewis/figyr)
+
 Configure your Go app simply with zero configuration. Figyr parses config values
 from various sources into a struct that you provide.
 
