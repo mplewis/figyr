@@ -29,18 +29,18 @@ type Config struct {
 	DefaultDuration time.Duration `figyr:"default=1s"`
 }
 
-func check(err error) {
-	if err != nil {
-		panic(err)
+func prettyPrint(x any) {
+	all := fmt.Sprintf("%#v\n", x)
+	for _, s := range regexp.MustCompile(`[{},]`).Split(all, -1) {
+		fmt.Println(strings.TrimSpace(s))
 	}
 }
 
 func main() {
 	var cfg Config
 	err := figyr.Parse(&cfg)
-	check(err)
-	all := fmt.Sprintf("%#v\n", cfg)
-	for _, s := range regexp.MustCompile(`[{},]`).Split(all, -1) {
-		fmt.Println(strings.TrimSpace(s))
+	if err != nil {
+		panic(err)
 	}
+	prettyPrint(cfg)
 }
