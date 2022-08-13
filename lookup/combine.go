@@ -2,7 +2,7 @@ package lookup
 
 // combined looks for config values from multiple getters sequentially.
 type combined struct {
-	getters []getter
+	getters []Getter
 }
 
 // Get returns the value for the given key.
@@ -17,6 +17,6 @@ func (c combined) Get(key string) (string, bool) {
 }
 
 // Combine combines the given getters into a single getter.
-func Combine(getters ...getter) combined {
+func Combine(getters ...Getter) combined {
 	return combined{getters: getters}
 }

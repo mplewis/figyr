@@ -8,8 +8,8 @@ import (
 // configArgMatcher matches a config file path argument.
 var configArgMatcher = regexp.MustCompile(`^--config=(.*)$`)
 
-// getter is an interface for getting a named value if it exists.
-type getter interface {
+// Getter is an interface for getting a named value if it exists.
+type Getter interface {
 	Get(string) (string, bool)
 }
 
@@ -25,13 +25,13 @@ type LookupArgs struct {
 // 1. `os.Args`
 // 2. `--config=myconfig.json` arguments
 // 3. Environment variables
-func NewFromDefaults(args *LookupArgs) (getter, error) {
+func NewFromDefaults(args *LookupArgs) (Getter, error) {
 	if args == nil {
 		args = &LookupArgs{OSArgs: os.Args, EnvFetcher: os.Getenv}
 	}
 	args.FilePaths = getConfigPaths(args.OSArgs)
 
-	fetchers := []getter{}
+	fetchers := []Getter{}
 	fetchers = append(fetchers, NewFromArgs(args.OSArgs))
 	for _, path := range args.FilePaths {
 		fetcher, err := NewFromFile(path)

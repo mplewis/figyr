@@ -1,0 +1,17 @@
+main.Config
+RequiredString:"value from YAML"
+RequiredBool:true
+RequiredInt:42
+RequiredFloat:3.14
+RequiredDuration:5000000000
+OptionalString:""
+OptionalBool:false
+OptionalInt:0
+OptionalFloat:6.28
+OptionalDuration:0
+DefaultString:"hello"
+DefaultBool:false
+DefaultInt:42
+DefaultFloat:3.14
+DefaultDuration:300000000000
+

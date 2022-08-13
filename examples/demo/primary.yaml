@@ -1,0 +1,6 @@
+required_string: value from YAML
+required_bool: true
+
+optional_float: 6.28
+
+default_duration: 5m

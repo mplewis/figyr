@@ -1,0 +1,7 @@
+{
+  "required_string": "value from JSON",
+  "required_int": 42,
+  "required_duration": "1s",
+
+  "default_bool": false
+}

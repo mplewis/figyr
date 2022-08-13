@@ -1,0 +1,3 @@
+#!/bin/bash
+
+bin/bash_unit bin/test_integration

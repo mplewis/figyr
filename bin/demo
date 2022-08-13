@@ -1,0 +1,13 @@
+#!/bin/bash
+set -euo pipefail
+
+export REQUIRED_FLOAT=3.14
+export REQUIRED_BOOL=false
+
+(
+  cd examples/demo
+  go run . \
+    --config=secondary.json \
+    --config=primary.yaml \
+    --required-duration=5s
+)
