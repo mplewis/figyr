@@ -43,6 +43,12 @@ func coerce(fieldName string, typ reflect.Type, raw string) (any, error) {
 		}
 		return time.ParseDuration(raw)
 
+	case "time.Time":
+		if empty {
+			return time.Time{}, nil
+		}
+		return time.Parse(time.RFC3339, raw)
+
 	default:
 		return nil, fmt.Errorf("unsupported type %s for field %s", ident, fieldName)
 	}

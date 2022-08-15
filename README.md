@@ -26,6 +26,15 @@ func LoadConfig() (Config, error) {
 }
 ```
 
+Figyr supports the following types, defined in [coerce.go](refparse/coerce.go):
+
+- string
+- [bool](https://pkg.go.dev/strconv#ParseBool)
+- integer
+- float
+- [time.Duration](https://pkg.go.dev/time#ParseDuration)
+- [time.Time](https://pkg.go.dev/time#RFC3339) (RFC3339 format)
+
 For an extended example, run [`bin/demo`](bin/demo) and read the source in
 [`examples/demo/main.go`](examples/demo/main.go).
 

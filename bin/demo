@@ -9,5 +9,6 @@ export REQUIRED_BOOL=false
   go run . \
     --config=secondary.json \
     --config=primary.yaml \
-    --required-duration=5s
+    --required-duration=5s \
+    --default-time=2020-01-01T00:00:00Z
 )

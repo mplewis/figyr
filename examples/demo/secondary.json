@@ -2,6 +2,6 @@
   "required_string": "value from JSON",
   "required_int": 42,
   "required_duration": "1s",
-
+  "required_time": "1992-01-11T19:34:00.000Z",
   "default_bool": false
 }
