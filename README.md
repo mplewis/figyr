@@ -2,6 +2,8 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/mplewis/figyr.svg)](https://pkg.go.dev/github.com/mplewis/figyr)
 
+_pronounced like "figure"_
+
 Configure your Go app simply with zero configuration. Figyr parses config values
 from various sources into a struct that you provide.
 
@@ -109,5 +111,5 @@ Code system. Use whichever config methods work best for you.
 
 # TODO
 
-- `--help` messages
+- Better-organized error messages
 - Cut a proper release
