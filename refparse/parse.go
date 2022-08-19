@@ -16,7 +16,8 @@ func Parse(dst interface{}, source lookup.Getter) error {
 
 	el := typ.Elem()
 	defs := []FieldDef{}
-	errors := []error{}
+	parseErrors := []error{}
+	valueErrors := []error{}
 	for i := 0; i < el.NumField(); i++ {
 		f := el.Field(i)
 		val, annotated := f.Tag.Lookup("figyr")
@@ -26,7 +27,7 @@ func Parse(dst interface{}, source lookup.Getter) error {
 
 		def, err := BuildFieldDef(f.Name, f.Type, val)
 		if err != nil {
-			errors = append(errors, err)
+			parseErrors = append(parseErrors, fmt.Errorf("%s: %v", f.Name, err))
 			continue
 		}
 		defs = append(defs, def)
@@ -37,16 +38,18 @@ func Parse(dst interface{}, source lookup.Getter) error {
 		}
 		result, err := def.Coerce(val)
 		if err != nil {
-			errors = append(errors, err)
+			valueErrors = append(valueErrors, fmt.Errorf("%s: %v", f.Name, err))
 			continue
 		}
 		reflect.ValueOf(dst).Elem().Field(i).Set(reflect.ValueOf(result))
 	}
 
+	if len(parseErrors) > 0 {
+		return fmt.Errorf("%v", parseErrors)
+	}
 	printHelpAndExitIfRequested(defs)
-
-	if len(errors) > 0 {
-		return fmt.Errorf("%v", errors)
+	if len(valueErrors) > 0 {
+		return fmt.Errorf("%v", valueErrors)
 	}
 	return nil
 }

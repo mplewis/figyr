@@ -34,7 +34,7 @@ func (f FieldDef) Constraint() string {
 // Coerce converts the given value to a type compatible with the field.
 func (f *FieldDef) Coerce(raw string) (any, error) {
 	if f.Required && raw == "" {
-		return nil, fmt.Errorf("missing required field %s", f.Name)
+		return nil, fmt.Errorf("missing value for required field")
 	}
 	if raw == "" {
 		raw = f.Default
