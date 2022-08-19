@@ -10,5 +10,6 @@ export REQUIRED_BOOL=false
     --config=secondary.json \
     --config=primary.yaml \
     --required-duration=5s \
-    --default-time=2020-01-01T00:00:00Z
+    --default-time=2020-01-01T00:00:00Z \
+    "$@"
 )

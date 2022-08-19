@@ -17,9 +17,9 @@ data will be loaded and tagging its fields:
 import "github.com/mplewis/figyr"
 
 type Config struct {
-	SiteName      string        `figyr:"required"`
-	Development   bool          `figyr:"optional"`
-	CheckInterval time.Duration `figyr:"default=15s"`
+	SiteName      string        `figyr:"required,description=The public name of the website"`
+	Development   bool          `figyr:"optional,description=Run the server with development logging on"`
+	CheckInterval time.Duration `figyr:"default=15s,description=How often to check for updates"`
 }
 
 func LoadConfig() (Config, error) {
@@ -27,6 +27,16 @@ func LoadConfig() (Config, error) {
   err := figyr.Parse(&cfg)
   return cfg, err
 }
+```
+
+Figyr supports a help message generated from your flags:
+
+```
+$ ./my_app --help
+Options:
+    --site-name        required       The public name of the website
+    --development      optional       Run the server with development logging on
+    --check-interval   default: 15s   How often to check for updates
 ```
 
 # Supported Types

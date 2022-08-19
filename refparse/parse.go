@@ -13,7 +13,10 @@ func Parse(dst interface{}, source lookup.Getter) error {
 	if typ.Kind() != reflect.Ptr {
 		return fmt.Errorf("dst must be a pointer")
 	}
+
 	el := typ.Elem()
+	defs := []FieldDef{}
+	errors := []error{}
 	for i := 0; i < el.NumField(); i++ {
 		f := el.Field(i)
 		val, annotated := f.Tag.Lookup("figyr")
@@ -21,10 +24,12 @@ func Parse(dst interface{}, source lookup.Getter) error {
 			continue
 		}
 
-		def, err := buildFieldDef(f.Name, f.Type, val)
+		def, err := BuildFieldDef(f.Name, f.Type, val)
 		if err != nil {
-			return err
+			errors = append(errors, err)
+			continue
 		}
+		defs = append(defs, def)
 
 		val, found := source.Get(f.Name)
 		if !found && def.Default != "" {
@@ -32,9 +37,16 @@ func Parse(dst interface{}, source lookup.Getter) error {
 		}
 		result, err := def.Coerce(val)
 		if err != nil {
-			return err
+			errors = append(errors, err)
+			continue
 		}
 		reflect.ValueOf(dst).Elem().Field(i).Set(reflect.ValueOf(result))
+	}
+
+	printHelpAndExitIfRequested(defs)
+
+	if len(errors) > 0 {
+		return fmt.Errorf("%v", errors)
 	}
 	return nil
 }
