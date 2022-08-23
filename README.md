@@ -41,6 +41,50 @@ Options:
     --check-interval   default: 15s   How often to check for updates
 ```
 
+Here are several different ways you could configure the app shown above:
+
+## Command-line flags
+
+```sh
+./my_app --site-name="My Fancy Blog" --check-interval=1m
+```
+
+## Environment variables
+
+```sh
+export SITE_NAME="My Fancy Blog"
+export CHECK_INTERVAL=1m
+./my_app
+```
+
+## JSON config file
+
+```sh
+./my_app --config=config.json
+```
+
+`config.json`:
+
+```json
+{
+  "siteName": "My Fancy Blog",
+  "checkInterval": "1m"
+}
+```
+
+## YAML config file
+
+```sh
+./my_app --config=config.yaml
+```
+
+`config.yaml`:
+
+```yaml
+site_name: My Fancy Blog
+check_interval: 1m
+```
+
 # Supported Types
 
 Figyr supports the following types, defined in [coerce.go](refparse/coerce.go):
@@ -113,3 +157,4 @@ Code system. Use whichever config methods work best for you.
 
 - Better-organized error messages
 - Cut a proper release
+- Support for value lists (e.g. `[]string`)
