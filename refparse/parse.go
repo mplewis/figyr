@@ -5,10 +5,11 @@ import (
 	"reflect"
 
 	"github.com/mplewis/figyr/lookup"
+	"github.com/mplewis/figyr/types"
 )
 
 // Parse parses a config struct and fills it with coerced data, or returns an error if something went wrong.
-func Parse(dst interface{}, source lookup.Getter) error {
+func Parse(po types.ParserOptions, dst interface{}, source lookup.Getter) error {
 	typ := reflect.TypeOf(dst)
 	if typ.Kind() != reflect.Ptr {
 		return fmt.Errorf("dst must be a pointer")
@@ -47,7 +48,7 @@ func Parse(dst interface{}, source lookup.Getter) error {
 	if len(parseErrors) > 0 {
 		return fmt.Errorf("%v", parseErrors)
 	}
-	printHelpAndExitIfRequested(defs)
+	printHelpAndExitIfRequested(po, defs)
 	if len(valueErrors) > 0 {
 		return fmt.Errorf("%v", valueErrors)
 	}

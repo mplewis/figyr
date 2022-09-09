@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/iancoleman/strcase v0.2.0
+	github.com/mitchellh/go-wordwrap v1.0.1
 	github.com/onsi/ginkgo/v2 v2.1.4
 	github.com/onsi/gomega v1.20.0
 	golang.org/x/exp v0.0.0-20220722155223-a9213eeb770e
@@ -15,4 +16,5 @@ require (
 	golang.org/x/net v0.0.0-20220425223048-2871e0cb64e4 // indirect
 	golang.org/x/sys v0.0.0-20220422013727-9388b58f7150 // indirect
 	golang.org/x/text v0.3.7 // indirect
+	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 )
