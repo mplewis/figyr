@@ -18,6 +18,8 @@ data will be loaded and tagging its fields:
 ```go
 import "github.com/mplewis/figyr"
 
+const desc = "TinyServer hosts your website on any server."
+
 type Config struct {
 	SiteName      string        `figyr:"required,description=The public name of the website"`
 	Development   bool          `figyr:"optional,description=Run the server with development logging on"`
@@ -26,7 +28,7 @@ type Config struct {
 
 func LoadConfig() (Config, error) {
   var cfg Config
-  err := figyr.Parse(&cfg)
+  err := figyr.New(desc).Parse(&cfg)
   return cfg, err
 }
 ```
@@ -35,6 +37,8 @@ Figyr supports a help message generated from your flags:
 
 ```
 $ ./my_app --help
+TinyServer hosts your website on any server.
+
 Options:
     --site-name        required       The public name of the website
     --development      optional       Run the server with development logging on

@@ -8,6 +8,8 @@ import (
 	"github.com/mplewis/figyr"
 )
 
+const desc = "This is a demonstration of figyr's basic functions."
+
 type Config struct {
 	RequiredString   string        `figyr:"required,description=A string that must be provided"`
 	RequiredBool     bool          `figyr:"required,description=A bool that must be provided"`
@@ -47,6 +49,6 @@ func prettyPrint(x any) {
 
 func main() {
 	var cfg Config
-	figyr.MustParse(&cfg)
+	figyr.New(desc).MustParse(&cfg)
 	prettyPrint(cfg)
 }
